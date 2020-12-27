@@ -1,0 +1,82 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+}
+
+apply plugin: 'maven-publish'
+
+group 'cn.kherrisan'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    gson_version = '2.8.6'
+    slf4j_version = '1.7.30'
+    log4j_version = '2.13.3'
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.4'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // xml
+    // https://mvnrepository.com/artifact/dom4j/dom4j
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+    // https://mvnrepository.com/artifact/jaxen/jaxen
+    compile group: 'jaxen', name: 'jaxen', version: '1.2.0'
+
+    // http
+    compile "com.squareup.okhttp3:okhttp:4.7.2"
+
+    // json
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    compile group: 'com.google.code.gson', name: 'gson', version: "$gson_version"
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+
+    // log
+    compile group: 'io.github.microutils', name: 'kotlin-logging', version: '1.7.9'
+//    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+//    compile group: 'org.slf4j', name: 'slf4j-api', version: "$slf4j_version"
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: "$log4j_version"
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: "$log4j_version"
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: "$log4j_version"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'cn.kherrisan'
+            artifactId 'kommons'
+            version '1.0.0-SNAPSHOT'
+
+            from components.kotlin
+            // more goes in here
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/kherrisan/kommons"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
